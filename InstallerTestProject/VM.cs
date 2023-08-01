@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Squirrel;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -6,6 +7,8 @@ using System.Printing;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using Squirrel;
+using System.IO;
 
 namespace InstallerTestProject
 {
@@ -31,8 +34,6 @@ namespace InstallerTestProject
     {
         public event PropertyChangedEventHandler? PropertyChanged;
         string _input;
-        string _version;
-        string _update;
         public string Input{
             get => _input;
             set {
@@ -40,38 +41,42 @@ namespace InstallerTestProject
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Input)));
             }
         }
-        public string Version
-        {
-            get => _version;
-            set
-            {
-                _version = value;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Version)));
-            }
-        }
-        public string Update
-        {
-            get => _update;
-            set
-            {
-                _update = value;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Update)));
-            }
-        }
+        string dir;
         public VM()
         {
-            Input = Settings1.Default.inputText;
-            Version = "";
-            Update = "";
-            
+            dir = Directory.GetCurrentDirectory();
+            if (!File.Exists(dir + "//1.txt"))
+            {
+                Write("default");
+                Input = "default";
+            }
+            else {
+                using (FileStream stream = File.OpenWrite(dir + "//1.txt"))
+                {
+                    using (StreamReader reader = new StreamReader(stream))
+                    {
+                        Input = reader.ReadToEnd();
+                    }
+                }
+            }
+
         }
         public Command Click
         {
             get {
                 return new Command(() => {
-                    Settings1.Default.inputText = Input;
-                    Settings1.Default.Save();
+                    Write(Input);
                 });
+            }
+        }
+        private void Write(string input) {
+            using (FileStream stream = File.OpenWrite(dir + "//1.txt"))
+            {
+                using (StreamWriter writer = new StreamWriter(stream))
+                {
+                    writer.WriteLine(Input);
+                    writer.Flush();
+                }
             }
         }
     }

@@ -5,17 +5,19 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:InstallerTestProject"
         mc:Ignorable="d"
-        Title="InstallerTestProject" Height="200" Width="200">
+        Title="InstallerTestProject" Height="200" Width="200" Loaded="Window_Loaded">
+    <Window.DataContext>
+        <local:VM></local:VM>
+    </Window.DataContext>
     <StackPanel>
-        <TextBlock>
-            <Run Text="Version "/>
-            <Run Text=""/>
-        </TextBlock>
-        <TextBlock>
-            <Run Text="Updates "/>
-            <Run/>
-        </TextBlock>
+        <TextBlock x:Name="vers"
+            Text="{Binding Version}"/>
+        <TextBlock 
+            x:Name="upg"
+            Text="{Binding Update}"/>
         <Button
+            x:Name="btn"
+            Click="Button_Click"
             Margin="20"
             Content="Update"/>
         <TextBox
